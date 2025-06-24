@@ -39,4 +39,4 @@ Types of language:
 
 This webiste run on **free api plan**. only **10 news articles** render.
 
-<a href="https://wwn.netlify.app/" target="_blank">website link</a>
+[Website Link](https://wwn.netlify.app/)
