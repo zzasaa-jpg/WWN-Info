@@ -1,4 +1,4 @@
-﻿# WWN (World Wild News)
+﻿# WWN (World Wide News)
 
 ## Details of stack, third party, programming language
 - FrontEnd
@@ -40,3 +40,4 @@ Types of language:
 This webiste run on **free api plan**. only **10 news articles** render.
 
 [Website Link](https://wwn.netlify.app/)
+
