@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import News from './News';
 import './App.css';
 import logo from './logo.png';
@@ -23,21 +23,25 @@ function App() {
   // calling the api by useEffect
   useEffect(() => {
     const fetchData = async () => {
+      setError(null);
+      setLoading(true);
       try {
-        const response = await fetch(`https://gnews.io/api/v4/top-headlines?category=${selectedCategory}&q=${category}&lang=${selectedLanguage}&apikey=${process.env.REACT_APP_NEWS_KEY}`);
-        if (response.ok) {
-          const data = await response.json();
+        const response = await fetch(`${process.env.REACT_APP_API_URL}?category=${category}&selectedCategory=${selectedCategory}&selectedLanguage=${selectedLanguage}`)
+
+        const data = await response.json();
+        if (data.success) {
           setArticles(data.articles);
-          setLoading(false);
+          setError(null);
         } else {
-          console.error('Failed to fetch data');
-          const errordata = await response.json()
-          setError(errordata.error[0]); //set the error message
-          setLoading(false)
+          setArticles([]);
+          setError(data.error || "Failed to fetch")
         }
       } catch (error) {
         // catch the error
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error.message);
+        setError(error.message || "Network error");
+        setArticles([]);
+      } finally {
         setLoading(false)
       }
     };
@@ -85,7 +89,7 @@ function App() {
   // event for handleSearchChange
   const handleSearchChange = (event) => {
     if (event.key === 'Enter') {
-      setCategory(event.target.value); 
+      setCategory(event.target.value);
     } else {
       setCategory("india");
     }
@@ -188,19 +192,21 @@ function App() {
         {/* News rendring */}
         {
           // Add a condition for News articles and Loader Component
-          loading ? (<Loader />) : (
-
+          loading ? (
+            <Loader />
+          ) : error ? (
+            <h1 id='no-news'>{error}</h1>
+          ) : articles && articles.length > 0 ? (
             <div className='news-show'>
               <section className='news-articles'>
                 {/* map function use for render the newses */}
-                {articles.length !== 0 ?
-                  articles.map((article, index) => (
-                    <News key={index} article={article} />
-                  )) :
-                  <h1 id='no-news'>Failed news fetching...{error}</h1>
-                }
+                {articles.map((article, index) => (
+                  <News key={index} article={article} />
+                ))}
               </section>
             </div>
+          ) : (
+            <h1 id='no-news'>No articles found.</h1>
           )
         }
       </div>
